@@ -7,7 +7,7 @@ import org.raflab.studsluzba.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Converters {
+public class  Converters {
 
     public static Nastavnik toNastavnik(NastavnikRequest nastavnikRequest) {
         Nastavnik nastavnik = new Nastavnik();
