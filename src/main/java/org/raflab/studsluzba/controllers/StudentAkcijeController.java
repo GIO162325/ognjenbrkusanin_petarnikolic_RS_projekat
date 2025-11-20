@@ -1,11 +1,10 @@
 package org.raflab.studsluzba.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.raflab.studsluzba.model.ObnovaGodine;
-import org.raflab.studsluzba.model.PrijavaIspita;
-import org.raflab.studsluzba.model.UpisGodine;
-import org.raflab.studsluzba.model.Uplata;
+import org.raflab.studsluzba.model.*;
 import org.raflab.studsluzba.services.StudentAkcijeService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,5 +54,15 @@ public class StudentAkcijeController {
     @GetMapping("/{indeksId}/obnove")
     public List<ObnovaGodine> obnove(@PathVariable Long indeksId) {
         return service.getObnove(indeksId);
+    }
+
+    @GetMapping("/{indeksId}/polozeni")
+    public Page<PolozenPredmet> polozeni(@PathVariable Long indeksId, Pageable pageable) {
+        return service.getPolozeni(indeksId, pageable);
+    }
+
+    @GetMapping("/{indeksId}/nepolozeni")
+    public Page<SlusaPredmet> nepolozeni(@PathVariable Long indeksId, Pageable pageable) {
+        return service.getNepolozeni(indeksId, pageable);
     }
 }

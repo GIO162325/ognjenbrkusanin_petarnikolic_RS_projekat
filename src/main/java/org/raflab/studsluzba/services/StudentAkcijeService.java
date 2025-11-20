@@ -3,6 +3,8 @@ package org.raflab.studsluzba.services;
 import lombok.RequiredArgsConstructor;
 import org.raflab.studsluzba.model.*;
 import org.raflab.studsluzba.repositories.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,6 +21,8 @@ public class StudentAkcijeService {
     private final PrijavaIspitaRepository prijavaRepo;
     private final UplataRepository uplataRepo;
     private final StudentIndeksRepository studentIndeksRepo;
+    private final PolozenPredmetRepository polozenPredmetRepo;
+    private final SlusaPredmetRepository slusaPredmetRepo;
 
     public UpisGodine upisiGodinu(Long indeksId, UpisGodine upis) {
         StudentIndeks indeks = studentIndeksRepo.findById(indeksId)
@@ -33,6 +37,19 @@ public class StudentAkcijeService {
     public ObnovaGodine obnoviGodinu(Long indeksId, ObnovaGodine obnova) {
         StudentIndeks indeks = studentIndeksRepo.findById(indeksId)
                 .orElseThrow(() -> new RuntimeException("Student indeks ne postoji"));
+
+        int ukupnoEspb = 0;
+        if (obnova.getPredmetiZaUpis() != null) {
+            for (Predmet p : obnova.getPredmetiZaUpis()) {
+                if (p != null && p.getEspb() != null) {
+                    ukupnoEspb += p.getEspb();
+                }
+            }
+        }
+
+        if (ukupnoEspb > 60) {
+            throw new IllegalArgumentException("Ukupan zbir ESPB za obnovu ne sme preći 60 (trenutno: " + ukupnoEspb + ")");
+        }
 
         obnova.setStudentIndeks(indeks);
         obnova.setDatumObnove(LocalDate.now());
@@ -87,6 +104,14 @@ public class StudentAkcijeService {
 
     public List<ObnovaGodine> getObnove(Long indeksId) {
         return obnovaRepo.findByStudentIndeksId(indeksId);
+    }
+
+    public Page<PolozenPredmet> getPolozeni(Long indeksId, Pageable pageable) {
+        return polozenPredmetRepo.findByStudentIndeksId(indeksId, pageable);
+    }
+
+    public Page<SlusaPredmet> getNepolozeni(Long indeksId, Pageable pageable) {
+        return slusaPredmetRepo.findNepolozeniForIndeks(indeksId, pageable);
     }
 
     private double getTrenutniKurs() {

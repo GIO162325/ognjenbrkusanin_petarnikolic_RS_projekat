@@ -12,30 +12,36 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentIndeksRepository extends JpaRepository<StudentIndeks, Long> {
-	
-	
-	@Query("select indeks from StudentIndeks indeks where indeks.studProgramOznaka like ?1 and indeks.godina = ?2 "
-			+ "and indeks.broj = ?3 ")
-    StudentIndeks findStudentIndeks(String studProgramOznaka, int godina, int broj);
-	
-	
-	//TODO dodati da se gledaju samo aktivni indeksi
-	@Query("select indeks from StudentIndeks indeks where "
-			+ "(:ime is null or lower(indeks.student.ime) like :ime) and "
-			+ "(:prezime is null or lower(indeks.student.prezime) like :prezime) and "
-			+ "(:studProgramOznaka is null or lower(indeks.studProgramOznaka) like :studProgramOznaka) and"
-			+ "(:godina is null or indeks.godina = :godina) and "
-			+ "(:broj is null or indeks.broj = :broj)")
-	Page<StudentIndeks> findStudentIndeks(String ime, String prezime, String studProgramOznaka, Integer godina, Integer broj, Pageable pageable);
-	
-	@Query("select si from StudentIndeks si where si.student.id = :idStudentPodaci")
-	List<StudentIndeks> findStudentIndeksiForStudentPodaciId(Long idStudentPodaci);
 
-	@Query("select si from StudentIndeks si where si.student.id = :idStudentPodaci and si.aktivan = true")
-	StudentIndeks findAktivanStudentIndeksiByStudentPodaciId(Long idStudentPodaci);
+	@Query("select indeks from StudentIndeks indeks " +
+			"where indeks.studProgramOznaka like ?1 and indeks.godina = ?2 and indeks.broj = ?3")
+	StudentIndeks findStudentIndeks(String studProgramOznaka, int godina, int broj);
 
-	@Query("SELECT s.broj FROM StudentIndeks s WHERE s.godina = :godina AND s.studProgramOznaka = :studProgramOznaka AND s.aktivan = true ORDER BY s.broj ASC")
-	List<Integer> findBrojeviByGodinaAndStudProgramOznaka(@Param("godina") int godina, @Param("studProgramOznaka") String studProgramOznaka);
+	@Query("select indeks from StudentIndeks indeks where " +
+			"(:ime is null or lower(indeks.student.ime) like :ime) and " +
+			"(:prezime is null or lower(indeks.student.prezime) like :prezime) and " +
+			"(:studProgramOznaka is null or lower(indeks.studProgramOznaka) like :studProgramOznaka) and " +
+			"(:godina is null or indeks.godina = :godina) and " +
+			"(:broj is null or indeks.broj = :broj)")
+	Page<StudentIndeks> findStudentIndeks(@Param("ime") String ime,
+										  @Param("prezime") String prezime,
+										  @Param("studProgramOznaka") String studProgramOznaka,
+										  @Param("godina") Integer godina,
+										  @Param("broj") Integer broj,
+										  Pageable pageable);
 
+	@Query("select indeks.broj from StudentIndeks indeks " +
+			"where indeks.godina = :godina and indeks.studProgramOznaka = :studProgramOznaka " +
+			"order by indeks.broj asc")
+	List<Integer> findBrojeviByGodinaAndStudProgramOznaka(@Param("godina") Integer godina,
+														  @Param("studProgramOznaka") String studProgramOznaka);
 
+	@Query("select indeks from StudentIndeks indeks " +
+			"where indeks.aktivan = true and indeks.student.id = :studPodaciId")
+	List<StudentIndeks> findAktivanStudentIndeksiByStudentPodaciId(@Param("studPodaciId") Long studPodaciId);
+
+	// NOVO: aktivni indeksi studenata koji su završili određenu srednju školu
+	@Query("select indeks from StudentIndeks indeks " +
+			"where indeks.aktivan = true and indeks.student.srednjaSkola.id = :srednjaSkolaId")
+	List<StudentIndeks> findAktivniBySrednjaSkola(@Param("srednjaSkolaId") Long srednjaSkolaId);
 }
