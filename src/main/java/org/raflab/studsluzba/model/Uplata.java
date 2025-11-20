@@ -13,20 +13,25 @@ import java.time.LocalDate;
 @EqualsAndHashCode(exclude = {"studentIndeks"})
 @ToString(exclude = {"studentIndeks"})
 public class Uplata {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
     @ManyToOne(optional = false)
-    private StudentIndeks studentIndeks; // uplata po indeksu/programu
-
+    private StudentIndeks studentIndeks;
 
     @Column(precision = 12, scale = 2)
     private BigDecimal iznos;
 
 
     private LocalDate datum;
+
     private String svrha;
     private String pozivNaBroj;
+
+
+    @Column(precision = 10, scale = 4)
+    private BigDecimal srednjiKurs;
 }
