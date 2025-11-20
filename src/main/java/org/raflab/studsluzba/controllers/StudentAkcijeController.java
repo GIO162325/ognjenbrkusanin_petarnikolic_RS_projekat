@@ -8,6 +8,8 @@ import org.raflab.studsluzba.model.Uplata;
 import org.raflab.studsluzba.services.StudentAkcijeService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/student")
 @RequiredArgsConstructor
@@ -38,5 +40,20 @@ public class StudentAkcijeController {
     @GetMapping("/{indeksId}/ostatak")
     public double ostatak(@PathVariable Long indeksId) {
         return service.preostaliIznosEur(indeksId);
+    }
+
+    @GetMapping("/{indeksId}/ostatak-din")
+    public double ostatakDin(@PathVariable Long indeksId) {
+        return service.preostaliIznosDin(indeksId);
+    }
+
+    @GetMapping("/{indeksId}/upisi")
+    public List<UpisGodine> upisi(@PathVariable Long indeksId) {
+        return service.getUpisi(indeksId);
+    }
+
+    @GetMapping("/{indeksId}/obnove")
+    public List<ObnovaGodine> obnove(@PathVariable Long indeksId) {
+        return service.getObnove(indeksId);
     }
 }
