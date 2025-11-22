@@ -1,30 +1,33 @@
 package org.raflab.studsluzba.controllers;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.controllers.request.PredmetCreateRequest;
 import org.raflab.studsluzba.model.Predmet;
-import org.raflab.studsluzba.repositories.PredmetRepository;
 import org.raflab.studsluzba.services.PredmetService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping(path = "/api/predmet")
 public class PredmetController {
-	
-	final PredmetService predmetService;
-	
+
+	private final PredmetService predmetService;
+
 	@GetMapping(path = "/all")
-	public Iterable<Predmet> getPredmeti(){
+	public Iterable<Predmet> getAllPredmeti() {
 		return predmetService.findAll();
 	}
-	
-	@GetMapping(path = "/all/{godinaAkreditacije}")
-	public List<Predmet> getPredmetiForGodinaAkreditacije(@PathVariable Integer godinaAkreditacije){
-		return predmetService.getPredmetForGodinaAkreditacije(godinaAkreditacije);
+
+	@GetMapping(path = "/akreditacija/{godina}")
+	public List<Predmet> getPredmetiZaGodinuAkreditacije(@PathVariable Integer godina) {
+		return predmetService.getPredmetForGodinaAkreditacije(godina);
 	}
-	
+
+	@PostMapping(path = "/add")
+	public Long addPredmet(@RequestBody PredmetCreateRequest request) {
+		return predmetService.kreirajPredmet(request);
+	}
 }

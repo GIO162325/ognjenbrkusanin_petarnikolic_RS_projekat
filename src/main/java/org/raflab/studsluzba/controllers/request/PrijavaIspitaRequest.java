@@ -1,26 +1,14 @@
 package org.raflab.studsluzba.controllers.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
-import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PrijavaIspitaRequest implements Serializable {
+public class PrijavaIspitaRequest {
 
-    private static final long serialVersionUID = 1L;
-
-    @NotNull
-    @Positive
+    private Long studentIndeksId;
     private Long predmetId;
-
-    @NotNull
-    @Positive
     private Long ispitniRokId;
+    private LocalDate datumPrijave;    // null -> today
 }

@@ -1,169 +1,139 @@
 package org.raflab.studsluzba.services;
 
 import lombok.RequiredArgsConstructor;
+import org.raflab.studsluzba.controllers.request.ObnovaGodineRequest;
+import org.raflab.studsluzba.controllers.request.PrijavaIspitaRequest;
+import org.raflab.studsluzba.controllers.request.UpisGodineRequest;
+import org.raflab.studsluzba.controllers.request.UplataRequest;
 import org.raflab.studsluzba.model.*;
+import org.raflab.studsluzba.model.dtos.PaymentStatusDTO;
 import org.raflab.studsluzba.repositories.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class StudentAkcijeService {
 
-    private static final double DEFAULT_KURS_EUR = 117.0;
-    private static final double GODISNJA_SKOLARINA_EUR = 3000.0;
-    private static final String EUR_RATE_URL =
-            "https://kurs.resenje.org/api/v1/currencies/eur/rates/today";
+    private final UpisGodineRepository upisGodineRepository;
+    private final ObnovaGodineRepository obnovaGodineRepository;
+    private final PrijavaIspitaRepository prijavaIspitaRepository;
+    private final UplataRepository uplataRepository;
+    private final StudentIndeksRepository studentIndeksRepository;
+    private final PredmetRepository predmetRepository;
+    private final IspitniRokRepository ispitniRokRepository;
+    private final PaymentService paymentService;
 
-    private final UpisGodineRepository upisRepo;
-    private final ObnovaGodineRepository obnovaRepo;
-    private final PrijavaIspitaRepository prijavaRepo;
-    private final UplataRepository uplataRepo;
-    private final StudentIndeksRepository studentIndeksRepo;
-    private final PolozenPredmetRepository polozenPredmetRepo;
-    private final SlusaPredmetRepository slusaPredmetRepo;
+    // -------------------- UPIS GODINE --------------------
 
+    @Transactional
+    public Long upisiGodinu(UpisGodineRequest request) {
+        StudentIndeks indeks = studentIndeksRepository.findById(request.getStudentIndeksId())
+                .orElseThrow(() -> new IllegalArgumentException("StudentIndeks not found"));
 
-    public UpisGodine upisiGodinu(Long indeksId, UpisGodine upis) {
-        StudentIndeks indeks = studentIndeksRepo.findById(indeksId)
-                .orElseThrow(() -> new RuntimeException("Student indeks ne postoji"));
-
+        UpisGodine upis = new UpisGodine();
         upis.setStudentIndeks(indeks);
-        upis.setDatumUpisa(LocalDate.now());
+        upis.setGodinaUpisa(request.getGodinaUpisa());
+        upis.setDatumUpisa(request.getDatumUpisa() != null ? request.getDatumUpisa() : LocalDate.now());
+        upis.setNapomena(request.getNapomena());
 
-        return upisRepo.save(upis);
+        if (request.getPrenetiPredmetiIds() != null && !request.getPrenetiPredmetiIds().isEmpty()) {
+            List<Predmet> preneti = new ArrayList<>();
+            predmetRepository.findAllById(request.getPrenetiPredmetiIds())
+                    .forEach(praneti -> preneti.add(praneti));
+            upis.setPrenetiPredmeti(preneti);
+        } else {
+            upis.setPrenetiPredmeti(Collections.emptyList());
+        }
+
+        return upisGodineRepository.save(upis).getId();
     }
 
-    public ObnovaGodine obnoviGodinu(Long indeksId, ObnovaGodine obnova) {
-        StudentIndeks indeks = studentIndeksRepo.findById(indeksId)
-                .orElseThrow(() -> new RuntimeException("Student indeks ne postoji"));
+    // -------------------- OBNOVA GODINE --------------------
 
-        int ukupnoEspb = 0;
-        if (obnova.getPredmetiZaUpis() != null) {
-            for (Predmet p : obnova.getPredmetiZaUpis()) {
-                if (p != null && p.getEspb() != null) {
-                    ukupnoEspb += p.getEspb();
-                }
-            }
-        }
+    @Transactional
+    public Long obnovaGodine(ObnovaGodineRequest request) {
+        StudentIndeks indeks = studentIndeksRepository.findById(request.getStudentIndeksId())
+                .orElseThrow(() -> new IllegalArgumentException("StudentIndeks not found"));
 
-        if (ukupnoEspb > 60) {
-            throw new IllegalArgumentException(
-                    "Ukupan zbir ESPB za obnovu ne sme preći 60 (trenutno: " + ukupnoEspb + ")"
-            );
-        }
-
+        ObnovaGodine obnova = new ObnovaGodine();
         obnova.setStudentIndeks(indeks);
-        obnova.setDatumObnove(LocalDate.now());
+        obnova.setGodinaObnove(request.getGodinaObnove());
+        obnova.setDatumObnove(request.getDatumObnove() != null ? request.getDatumObnove() : LocalDate.now());
+        obnova.setNapomena(request.getNapomena());
 
-        return obnovaRepo.save(obnova);
+        if (request.getPredmetiZaUpisIds() != null && !request.getPredmetiZaUpisIds().isEmpty()) {
+            List<Predmet> predmeti = new ArrayList<>();
+            predmetRepository.findAllById(request.getPredmetiZaUpisIds())
+                    .forEach(predmeti::add);
+            obnova.setPredmetiZaUpis(predmeti);
+        } else {
+            obnova.setPredmetiZaUpis(Collections.emptyList());
+        }
+
+
+        return obnovaGodineRepository.save(obnova).getId();
     }
 
-    public PrijavaIspita prijaviIspit(Long indeksId, PrijavaIspita prijava) {
-        StudentIndeks indeks = studentIndeksRepo.findById(indeksId)
-                .orElseThrow(() -> new RuntimeException("Student indeks ne postoji"));
+    // -------------------- PRIJAVA ISPITA --------------------
 
+    @Transactional
+    public Long prijavaIspita(PrijavaIspitaRequest request) {
+        StudentIndeks indeks = studentIndeksRepository.findById(request.getStudentIndeksId())
+                .orElseThrow(() -> new IllegalArgumentException("StudentIndeks not found"));
+
+        Predmet predmet = predmetRepository.findById(request.getPredmetId())
+                .orElseThrow(() -> new IllegalArgumentException("Predmet not found"));
+
+        IspitniRok rok = ispitniRokRepository.findById(request.getIspitniRokId())
+                .orElseThrow(() -> new IllegalArgumentException("Ispitni rok not found"));
+
+        PrijavaIspita prijava = new PrijavaIspita();
         prijava.setStudentIndeks(indeks);
-        prijava.setDatumPrijave(LocalDate.now());
+        prijava.setPredmet(predmet);
+        prijava.setIspitniRok(rok);
+        prijava.setDatumPrijave(request.getDatumPrijave() != null ? request.getDatumPrijave() : LocalDate.now());
 
-        return prijavaRepo.save(prijava);
+        return prijavaIspitaRepository.save(prijava).getId();
     }
 
-    public Uplata dodajUplatu(Long indeksId, Uplata uplata) {
-        StudentIndeks indeks = studentIndeksRepo.findById(indeksId)
-                .orElseThrow(() -> new RuntimeException("Student indeks ne postoji"));
+    // -------------------- UPLATE / OSTATAK --------------------
 
+    @Transactional
+    public Long dodajUplatu(UplataRequest request) {
+        StudentIndeks indeks = studentIndeksRepository.findById(request.getStudentIndeksId())
+                .orElseThrow(() -> new IllegalArgumentException("StudentIndeks not found"));
+
+        Uplata uplata = new Uplata();
         uplata.setStudentIndeks(indeks);
-        uplata.setDatum(LocalDate.now());
+        uplata.setIznos(request.getIznos());
+        uplata.setDatum(request.getDatum() != null ? request.getDatum() : LocalDate.now());
+        uplata.setSvrha(request.getSvrha());
+        uplata.setPozivNaBroj(request.getPozivNaBroj());
 
-        double kurs = getTrenutniKurs();
-        uplata.setSrednjiKurs(BigDecimal.valueOf(kurs));
+        return uplataRepository.save(uplata).getId();
+    }
 
-        return uplataRepo.save(uplata);
+    public PaymentStatusDTO izracunajOstatak(Long studentIndeksId) {
+        List<Uplata> uplate = uplataRepository.findByStudentIndeksId(studentIndeksId);
+        return paymentService.izracunajOstatak(uplate);
     }
 
 
-    public double preostaliIznosEur(Long indeksId) {
-        StudentIndeks indeks = studentIndeksRepo.findById(indeksId)
-                .orElseThrow(() -> new RuntimeException("Student indeks ne postoji"));
-
-        double ukupnoEur = 0.0;
-
-        for (Uplata u : indeks.getUplataList()) {
-            if (u.getIznos() == null) {
-                continue;
-            }
-            double kurs = DEFAULT_KURS_EUR;
-            if (u.getSrednjiKurs() != null) {
-                kurs = u.getSrednjiKurs().doubleValue();
-            }
-
-            if (kurs <= 0) {
-                kurs = DEFAULT_KURS_EUR;
-            }
-
-            // iznos je u dinarima, deli se srednjim kursom da se dobije iznos u evrima
-            ukupnoEur += u.getIznos().doubleValue() / kurs;
-        }
-
-        return GODISNJA_SKOLARINA_EUR - ukupnoEur;
+    public List<UpisGodine> getUpisiForStudent(Long studentIndeksId) {
+        return upisGodineRepository.findByStudentIndeksIdOrderByGodinaUpisaAsc(studentIndeksId);
     }
 
-    public double preostaliIznosDin(Long indeksId) {
-        double preostaloEur = preostaliIznosEur(indeksId);
-        return preostaloEur * getTrenutniKurs();
+    public List<ObnovaGodine> getObnoveForStudent(Long studentIndeksId) {
+        return obnovaGodineRepository.findByStudentIndeksIdOrderByGodinaObnoveAsc(studentIndeksId);
     }
 
-
-    public List<UpisGodine> getUpisi(Long indeksId) {
-        return upisRepo.findByStudentIndeksId(indeksId);
-    }
-
-    public List<ObnovaGodine> getObnove(Long indeksId) {
-        return obnovaRepo.findByStudentIndeksId(indeksId);
-    }
-
-    public Page<PolozenPredmet> getPolozeni(Long indeksId, Pageable pageable) {
-        return polozenPredmetRepo.findByStudentIndeksId(indeksId, pageable);
-    }
-
-    public Page<SlusaPredmet> getNepolozeni(Long indeksId, Pageable pageable) {
-        return slusaPredmetRepo.findNepolozeniForIndeks(indeksId, pageable);
-    }
-
-
-    /**
-     * Pokušava da pročita kurs sa kurs.resenje.org, u suprotnom vraća DEFAULT_KURS_EUR.
-     */
-    private double getTrenutniKurs() {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            @SuppressWarnings("unchecked")
-            Map<String, Object> json =
-                    restTemplate.getForObject(EUR_RATE_URL, Map.class);
-
-            if (json == null) {
-                return DEFAULT_KURS_EUR;
-            }
-
-            // varijanta 1: {"exchange_middle": 117.1234, ...}
-            Object middle = json.get("exchange_middle");
-            if (middle instanceof Number) {
-                return ((Number) middle).doubleValue();
-            }
-
-            // ako format API-ja nije očekivan – fallback
-            return DEFAULT_KURS_EUR;
-        } catch (Exception ex) {
-            // u slučaju bilo kakve greške se ne ruši aplikacija već koristi default
-            return DEFAULT_KURS_EUR;
-        }
+    public List<PrijavaIspita> getPrijaveForStudent(Long studentIndeksId) {
+        return prijavaIspitaRepository.findByStudentIndeksId(studentIndeksId);
     }
 }

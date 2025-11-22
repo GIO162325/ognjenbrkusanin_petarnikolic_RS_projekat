@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(exclude = {"studentIndeks", "predmet", "priznatoSaUstanove", "ispit"})
 @ToString(exclude = {"studentIndeks", "predmet", "priznatoSaUstanove", "ispit"})
 @Table(
-        uniqueConstraints = @UniqueConstraint(columnNames = {"studentindeks_id", "predmet_id"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"student_indeks_id", "predmet_id"})
 )
 public class PolozenPredmet {
 

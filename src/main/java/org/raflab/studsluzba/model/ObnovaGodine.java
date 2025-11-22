@@ -4,6 +4,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -26,6 +27,7 @@ public class ObnovaGodine {
             joinColumns = @JoinColumn(name = "obnova_id"),
             inverseJoinColumns = @JoinColumn(name = "predmet_id")
     )
+    @JsonIgnore
     private List<Predmet> predmetiZaUpis;
 
     @ManyToOne(optional = false)

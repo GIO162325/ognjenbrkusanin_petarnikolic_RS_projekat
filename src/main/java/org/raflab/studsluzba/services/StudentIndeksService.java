@@ -43,6 +43,12 @@ public class StudentIndeksService {
     }
 
     public StudentIndeks findByStudentIdAndAktivan(Long studentPodaciId) {
-        return studentIndeksRepository.findAktivanStudentIndeksiByStudentPodaciId(studentPodaciId);
+        List<StudentIndeks> lista =
+                studentIndeksRepository.findAktivanStudentIndeksiByStudentPodaciId(studentPodaciId);
+
+        if (lista == null || lista.isEmpty()) {
+            return null;
+        }
+        return lista.get(0);
     }
 }

@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ObnovaGodineRepository extends JpaRepository<ObnovaGodine, Long> {
 
-    List<ObnovaGodine> findByStudentIndeksId(Long studentIndeksId);
+    List<ObnovaGodine> findByStudentIndeksIdOrderByGodinaObnoveAsc(Long studentIndeksId);
 }

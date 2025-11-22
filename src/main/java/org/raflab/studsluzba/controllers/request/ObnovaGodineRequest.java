@@ -1,31 +1,16 @@
 package org.raflab.studsluzba.controllers.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.*;
-import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class ObnovaGodineRequest implements Serializable {
+public class ObnovaGodineRequest {
 
-    private static final long serialVersionUID = 1L;
-
-    @NotNull
-    @Min(1)
-    @Max(8)
+    private Long studentIndeksId;
     private Integer godinaObnove;
-
-    @Size(max = 1000)
+    private LocalDate datumObnove;         // null -> today
     private String napomena;
-
-    @NotNull
-    @NotEmpty
-    private List<@NotNull Long> predmetiZaUpisIds;
+    private List<Long> predmetiZaUpisIds;  // id-jevi predmeta koje će ponovo slušati
 }

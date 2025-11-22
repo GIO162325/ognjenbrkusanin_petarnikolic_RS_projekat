@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface UpisGodineRepository extends JpaRepository<UpisGodine, Long> {
 
-    List<UpisGodine> findByStudentIndeksId(Long studentIndeksId);
+    List<UpisGodine> findByStudentIndeksIdOrderByGodinaUpisaAsc(Long studentIndeksId);
 }
