@@ -29,7 +29,6 @@ public class StudentAkcijeService {
     private final IspitniRokRepository ispitniRokRepository;
     private final PaymentService paymentService;
 
-    // -------------------- UPIS GODINE --------------------
 
     @Transactional
     public Long upisiGodinu(UpisGodineRequest request) {
@@ -54,7 +53,6 @@ public class StudentAkcijeService {
         return upisGodineRepository.save(upis).getId();
     }
 
-    // -------------------- OBNOVA GODINE --------------------
 
     @Transactional
     public Long obnovaGodine(ObnovaGodineRequest request) {
@@ -80,7 +78,6 @@ public class StudentAkcijeService {
         return obnovaGodineRepository.save(obnova).getId();
     }
 
-    // -------------------- PRIJAVA ISPITA --------------------
 
     @Transactional
     public Long prijavaIspita(PrijavaIspitaRequest request) {
@@ -102,7 +99,6 @@ public class StudentAkcijeService {
         return prijavaIspitaRepository.save(prijava).getId();
     }
 
-    // -------------------- UPLATE / OSTATAK --------------------
 
     @Transactional
     public Long dodajUplatu(UplataRequest request) {
