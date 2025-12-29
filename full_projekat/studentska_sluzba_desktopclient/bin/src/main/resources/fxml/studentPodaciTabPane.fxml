@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+
+
+
+<TabPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.raflab.studsluzbadesktopclient.controllers.StudentPodaciController">
+         <Tab text="Osnovni podaci">
+         <HBox alignment="center">
+         <GridPane alignment="center" hgap="10" vgap="10">
+	
+		<Label text="Ime" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+		<TextField fx:id="imeTf"  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+		
+		<Label text="Prezime" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+		<TextField fx:id="prezimeTf"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+		
+		<Label text="Srednje ime" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+		<TextField fx:id="srednjeImeTf"  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		
+		<Label text="JMBG" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+		<TextField fx:id="jmbgTf"  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+		
+		<Label text="Datum rođenja" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+		<DatePicker fx:id="datumRodjenjaDp"  GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+		
+		<Label text="Mesto rođenja" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+		<ComboBox fx:id="mestoRodjenjaCb"  GridPane.columnIndex="1" GridPane.rowIndex="5"/>		
+		
+		<Label text="Država rođenja" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+		<ComboBox fx:id="drzavaRodjenjaCb"  GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+		
+		<Label text="Pol" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+		<HBox GridPane.columnIndex="1" GridPane.rowIndex="7">
+			 <fx:define>
+        		<ToggleGroup fx:id="polGroup" />
+   		 	</fx:define>
+		    <RadioButton fx:id="radioButton" text="Muški" toggleGroup="$polGroup">
+		        <HBox.margin>
+		            <Insets right="3.0"/>
+		        </HBox.margin>
+		    </RadioButton>
+		
+		    <RadioButton fx:id="radioButton2" text="Ženski" toggleGroup="$polGroup">
+		        <HBox.margin>
+		            <Insets right="10.0" />
+		        </HBox.margin>
+		    </RadioButton>
+		</HBox>		
+		
+		</GridPane>
+		<GridPane alignment="center" hgap="10" vgap="10">
+		<padding>
+        	<Insets left="40.0" />
+    	</padding> 
+		<Label text="Državljanstvo" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+		<ComboBox fx:id="drzavljanstvoCb"  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+		
+		<Label text="Nacionalnost" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+		<TextField fx:id="nacionalnostTf"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+		<Label text="Broj licne karte" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+		<TextField fx:id="brojLicneKarteTf" GridPane.halignment="RIGHT"  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		<Label text="Izdata od" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+		<TextField fx:id="licnuKartuIzdaoTf"  GridPane.columnIndex="1" GridPane.rowIndex="3"/>	
+		</GridPane>
+		</HBox>
+		
+		
+         </Tab>
+
+         <Tab text="Kontakt podaci">
+         <HBox alignment="center">
+         <GridPane alignment="center" hgap="10" vgap="10">
+         	<Label text="Emejl" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+		   	<TextField fx:id="emailTf"  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+		   	<Label text="Broj telefona" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+		   	<TextField fx:id="brojTelefonaTf"   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+		   	<Label text="Adresa prebivališta" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+		   	<TextField fx:id="adresaPrebivalistaTf" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		   	<Label text="Mesto prebivališta" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+		   	<ComboBox fx:id="mestoPrebivalistaCb" GridPane.columnIndex="1" GridPane.rowIndex="3"/>		   	
+		  </GridPane>		 
+		  
+		  <GridPane  alignment="center" hgap="10" vgap="10"> 	
+		  	<padding>
+        		<Insets left="40.0" />
+    		</padding> 
+		   	<Label text="Adresa stanovanja" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+		   	<TextField fx:id="adresaStanovanjaTf"   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+		   	<Label text="Mesto stanovanja" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+		   	<ComboBox fx:id="mestoStanovanjaCb"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>		   	
+		 </GridPane>
+		 </HBox>  	
+		   	
+         </Tab>         
+        
+         <Tab text="Prvi upis">
+         	<BorderPane>
+         	<center>
+         	<HBox alignment="center">
+         	<GridPane alignment="center" hgap="10" vgap="10">
+         	<Label text="Zavrsena srednja skola" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+		   	<ComboBox fx:id="srednjeSkolaCb"  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+		   	<Button text="Dodaj" GridPane.columnIndex="2" GridPane.rowIndex="0" onAction="#handleOpenModalSrednjeSkole"/>
+		   	<TextField fx:id="strucnaSpremaTf"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+		   	<Label text="Stručna sprema" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+		   	
+		   	
+		   	<Label text="Uspeh srednja škola" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+		   	<TextField fx:id="uspehSrednjaSkolaTf"  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		   	<Label text="Uspeh Prijemni" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+		   	<TextField fx:id="uspehPrijemniTf"  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+		   	<Label text="Godina završetka srednje škole" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+		   	<TextField fx:id="godinaZavrsetkaSrednjeSkoleTf"  GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+		   	<Label text="Prelaz sa visokoškolske ustanove" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+		   	<TextField fx:id="prelazSaVisokoskolskeUstanoveTf"  GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+		   	</GridPane>
+		   	<GridPane alignment="center" hgap="10" vgap="10">
+		   	<padding>
+        		<Insets left="40.0" />
+    		</padding> 		   	
+		   	
+		   	<Label text="Prethodno završene studije" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+		   	<TextField fx:id="prethodnoZavrseneStudijeTf"  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+		   	<Label text="Na visokoškolskoj ustanovi" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+		   	<TextField fx:id="visokoskolskaUstanovaPrethodnihStudijaTf"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+		   	<Label text="Stečeno zvanje" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+		   	<TextField fx:id="stecenoZvanjeTf"  GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+		   	<Label text="Prosečna ocena" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+		   	<TextField fx:id="prosecnaOcenaTf"  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+		   	</GridPane>
+		   	
+		   	</HBox>	    	
+		   	</center>
+		   	<bottom>
+		   		<GridPane alignment="center" hgap="10" vgap="10">
+		   			<padding>
+        				<Insets top="40.0" />
+    				</padding> 		
+		   			<Label text="Datum upisa" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+			   		<DatePicker fx:id="datumUpisaDp"  GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+			   		<Label text="Napomena" GridPane.halignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+			   		<TextArea fx:id="napomenaTa"  GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+			   	</GridPane>	   	
+		   	</bottom>		    	
+		  	
+		  </BorderPane>	
+         </Tab>
+
+ </TabPane>
